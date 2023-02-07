@@ -8,14 +8,22 @@ const con = require('./db/conn');
 const  app = express();
 
 
-//template engine
-app.engine('handlebars', exphs( ));
-app.set('view engine', 'handlebars');
+
 
 //Models
 const Pensamento = require('./models/Pensamento');
 const User = require('./models/User');
 
+//Routes
+const pensamentoRoutes = require('./routes/pensamentoRoutes.js');
+
+//controller
+const PensamentoController = require('./controllers/PensamentoControle');
+
+
+//template engine
+app.engine('handlebars', exphs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 //receber resposta do body
 app.use(express.urlencoded({extended: true}));
@@ -56,6 +64,14 @@ app.use((req, res, next) => {
    }
    next();
 })
+
+//Routes
+app.use('/pensamentos', pensamentoRoutes);
+
+
+app.get('/', PensamentoController.showPensamentos);
+
+
 
 //conexão
 
