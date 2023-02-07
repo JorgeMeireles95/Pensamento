@@ -12,6 +12,9 @@ const  app = express();
 app.engine('handlebars', exphs( ));
 app.set('view engine', 'handlebars');
 
+//Models
+const Pensamento = require('./models/Pensamento');
+const User = require('./models/User');
 
 
 //receber resposta do body
