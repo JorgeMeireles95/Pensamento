@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 //controller
-const PensamentoController = require('../controllers/PensamentoControle.js');
+const PensamentoController = require('../controllers/PensamentoController.js');
 
 
 
