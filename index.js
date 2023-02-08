@@ -16,9 +16,11 @@ const User = require('./models/User');
 
 //Routes
 const pensamentoRoutes = require('./routes/pensamentoRoutes.js');
+const authRoutes = require('./routes/authRoutes.js');
+
 
 //controller
-const PensamentoController = require('./controllers/PensamentoControle');
+const PensamentoController = require('./controllers/PensamentoController.js');
 
 
 //template engine
@@ -68,8 +70,12 @@ app.use((req, res, next) => {
 //Routes
 app.use('/pensamentos', pensamentoRoutes);
 
+//ficou assim para ter o /login e não o /auth/login
+//app.use('/auth', authRoutes);
+app.use('/', authRoutes);
 
 app.get('/', PensamentoController.showPensamentos);
+
 
 
 
