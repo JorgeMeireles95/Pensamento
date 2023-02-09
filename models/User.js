@@ -12,7 +12,7 @@ const User = db.define('user', {
         allowNull: false,
         required: true
     },
-   senha:{
+   password:{
         type:DataTypes.STRING,
         allowNull: false,
         required: true

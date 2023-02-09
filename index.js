@@ -48,7 +48,8 @@ app.use(session({
         expires:new Date(Date.now() + 3600000),
         httpOnly:true
     }
-}),)
+}),
+)
 
 
 ///flash messages
@@ -59,10 +60,11 @@ app.use(flash());
 //public path
 app.use(express.static('public'));
 
-//salva ssessão na resposta
+//salva sessão na resposta  do servidor
 app.use((req, res, next) => {
-   if(req.session.user){
-       res.locals.user = req.session.user;
+    console.log(req.session.userid);
+   if(req.session.userid){
+       res.locals.session = req.session;
    }
    next();
 })
