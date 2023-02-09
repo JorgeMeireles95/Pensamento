@@ -1,8 +1,11 @@
-<div class="dashboard">
-  <div class="title-container">
-    <h2>Dashboard</h2>
-    <a href="/pensamentos/add" class="btn">Adicionar Pensamento</a>
-  </div>
-
-  <h3>Seus pensamentos</h3>
+<div class="tought-form-container">
+  <a href="/pensamento/dashboard">Voltar</a>
+    <h1>Criando um Pensamento:</h1>
+    <form action="/pensamento/add" method="POST">
+        <div class="form-control">
+            <label for="title">Título:</label>
+            <input type="text" name="title" placeholder="Digite o título">
+        </div>
+        <input type="submit" value="Criar Pensamento">
+    </form>
 </div>
