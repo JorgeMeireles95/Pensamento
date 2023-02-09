@@ -7,4 +7,15 @@ module.exports = class PensamentoController{
         res.render("pensamentos/home");
 
     }
+
+
+
+    static async dashboard(req, res){
+        const pensamentos = await Pensamento.findAll({
+            where: {user_id: req.session.userid},
+            include: [{model: User, as: 'user'}]
+        })
+
+        res.render('pensamentos/dashboard', {pensamentos: pensamentos})
+    }
 }
