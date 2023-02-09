@@ -12,7 +12,7 @@ const PensamentoController = require('../controllers/PensamentoController.js');
 //verifica se o usuario está logado para acessar a rotas
 const { checkAuth } = require('../helpers/auth.js');
 
-
+router.get('/add',checkAuth, PensamentoController.criaPensamento);
 router.get('/dashboard',checkAuth, PensamentoController.dashboard);
 router.get('/',PensamentoController.showPensamentos);
 
