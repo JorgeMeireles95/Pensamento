@@ -1,4 +1,4 @@
-##Lista pensamentos  do usuario.
+## Lista pensamentos  do usuario.
 -  recursos
 -  tela de login 
 -  tela de registro 
