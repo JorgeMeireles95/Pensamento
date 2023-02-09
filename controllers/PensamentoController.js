@@ -11,11 +11,18 @@ module.exports = class PensamentoController{
 
 
     static async dashboard(req, res){
-        const pensamentos = await Pensamento.findAll({
-            where: {user_id: req.session.userid},
-            include: [{model: User, as: 'user'}]
-        })
+        // const pensamentos = await Pensamento.findAll({
+        //     where: {user_id: req.session.userid},
+        //     include: [{model: User, as: 'user'}]
+        // })
 
-        res.render('pensamentos/dashboard', {pensamentos: pensamentos})
+        res.render('pensamentos/dashboard')//, {pensamentos: pensamentos})
+    }
+
+
+
+
+    static  criaPensamento(req, res){
+        res.render('pensamentos/create');
     }
 }
