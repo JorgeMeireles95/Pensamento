@@ -1,13 +1,9 @@
-module.exports.checkAuth = (req, res, next) => {
+module.exports.checkAuth = function (req, res, next) {
+  const userId = req.session.userid
 
-  const userId = req.session.userid;
-
-
-
-  if(!userid){
-    
-        res.redirect('/login');
+  if (!userId) {
+    res.redirect('/login')
   }
-next();
 
+  next()
 }

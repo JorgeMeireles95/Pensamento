@@ -1,120 +1,102 @@
-const User = require('../models/User');
+const User = require('../models/User')
 
+const bcrypt = require('bcryptjs')
 
+module.exports = class UserController {
+  static login(req, res) {
+    res.render('auth/login')
+  }
 
-//faz o hash da senha
-const bcrypt = require('bcryptjs');
+  static async loginPost(req, res) {
+    const { email, password } = req.body
 
+    // find user
+    const user = await User.findOne({ where: { email: email } })
 
-module.exports = class AuthController{
-    
-    static login (req, res){
-        res.render('auth/login')
+    if (!user) {
+      res.render('auth/login', {
+        message: 'Usuário não encontrado!',
+      })
+
+      return
     }
 
+    // compare password
+    const passwordMatch = bcrypt.compareSync(password, user.password)
 
-    static async loginPost(req, res){
-        const {email, password} = req.body;
+    if (!passwordMatch) {
+      res.render('auth/login', {
+        message: 'Senha inválida!',
+      })
 
+      return
+    }
 
-        //usuario existe
-        const user = await User.findOne({where: {email: email}})
+    // auth user
+    req.session.userid = user.id
 
-        if(!user){
-            req.flash('message', 'Usuário não existe')
-            res.render('auth/login')
-            return
-        }
+    req.flash('message', 'Login realizado com sucesso!')
 
+    req.session.save(() => {
+      res.redirect('/')
+    })
+  }
 
-        //verifica se a senha está correta
-        const checkPassword = bcrypt.compareSync(password, user.password);
+  static register(req, res) {
+    res.render('auth/register')
+  }
 
-        if(!checkPassword){
-            req.flash('message', 'Senha incorreta')
-            res.render('auth/login')
-            return
-        }
+  static async registerPost(req, res) {
+    const { name, email, password, confirmpassword } = req.body
 
+    // passwords match validation
+    if (password != confirmpassword) {
+      req.flash('message', 'As senhas não conferem, tente novamente!')
+      res.render('auth/register')
 
-        //inicializa a sessão do usuario
+      return
+    }
+
+    // email validation
+    const checkIfUserExists = await User.findOne({ where: { email: email } })
+
+    if (checkIfUserExists) {
+      req.flash('message', 'O e-mail já está em uso!')
+      res.render('auth/register')
+
+      return
+    }
+
+    const salt = bcrypt.genSaltSync(10)
+    const hashedPassword = bcrypt.hashSync(password, salt)
+
+    const user = {
+      name,
+      email,
+      password: hashedPassword,
+    }
+
+    User.create(user)
+      .then((user) => {
+        // initialize session
         req.session.userid = user.id
-        req.flash('message', 'Login realizado com sucesso!')
+
+        // console.log('salvou dado')
+        // console.log(req.session.userid)
+
+        req.session.userid = user.id
+
+        req.flash('message', 'Cadastro realizado com sucesso!')
+
         req.session.save(() => {
-            res.redirect('/')
+          res.redirect('/')
         })
+      })
+      .catch((err) => console.log(err))
+  }
 
-    }
-     
-
-
-
-
-    
-
-    static register(req, res){
-        res.render('auth/register')
-    }
-
-    static async registerPost(req, res){
-        const{name, email, password, confirmpassword} = req.body;
-
-       if(password != confirmpassword){
-        //
-           req.flash('message', 'As senhas não conferem')
-           res.render('auth/register')
-
-           return 
-       }
-
-       //verifica se usuario existe
-
-       const CheckIfUserExists =  await User.findOne({
-        where:{ email: email} })
-
-
-        if(CheckIfUserExists){
-            req.flash('message', 'Usuário já existe')
-            res.render('auth/register')
-    
-             return    
-        }     
-        
-        //encriptando a senha
-        const salt = bcrypt.genSaltSync(10);
-        const hashPassword = bcrypt.hashSync(password, salt);
-           
-     //verificando se a senha foi encriptada
-      // console.log(salt)
-      //console.log(hashPassword)
-
-       //salvando usuario no banco 
-       const user ={
-        name,
-        email, 
-        password: hashPassword,
-       }
-
-       //testando salvamento no banco
-       User.create(user)
-       .then((user) => {
-         // incicializa a sessao do usuario
-         req.session.userid = user.id
-         req.flash('message', 'Cadastro realizado com sucesso!')
-         req.session.save(() => {
-           res.redirect('/register')
-         })
-       })
-       .catch((err) => console.log(err))
-   }
-
-
-
-    static logout(req, res){
-        //remove a sessão do sistema
-        req.session.destroy()
-        res.redirect('/login')
-    }
- 
-
+  static logout(req, res) {
+    req.session.destroy()
+    res.redirect('/login')
+  }
 }
